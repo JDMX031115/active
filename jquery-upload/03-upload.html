@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>使用jquery实现文件上传</title>
+    <script src="assets/js/jquery.js"></script>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <style>
+        .container{
+            margin-top: 30px;
+        }
+        input[type=file] {
+            display: none;
+        }
+
+        #upload-btn {
+            width: 100px;
+            height: 100px;
+            background: url(images/upload.jpg) center;
+            background-size: 100%;
+        }
+
+        #mask {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, .8);
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        #mask img {
+            position: relative;
+            display: block;
+            margin: auto;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container">
+        <form method="post" id='uploadImg'>
+            <div id="upload-btn" class="row"></div>
+            <input type="file" name="file" id='file' />
+        </form>
+        <!-- 图片预览区域 -->
+        <div id="mask">
+            <img src="" alt="" class="preview">
+        </div>
+    </div>
+    <script>
+
+        $(function () {
+            $("#upload-btn").on('click', () => {
+                $("#file").click();
+            });
+            // 点击上传按钮
+            $("#file").change(function () {
+                if ($("#file").val() == '') {
+                    alert('请选择文件');
+                    return false;
+                }
+                var formData = new FormData($('#uploadImg')[0]);
+                $.ajax({
+                    url: 'upload.php',
+                    type: 'post',
+                    data: formData,
+                    dataType: 'json',
+                    processData: false,    //不需要对数据做任何预处理
+                    contentType: false,    //不设置数据格式
+                    success: function (res) {
+                        // 显示遮罩
+                        $("#mask").show();
+                        // 设置img标签的src属性
+                        $(".preview").attr('src', res.src);
+                    }
+                })
+
+            });
+
+            // 点击关闭遮罩层
+            mask.onclick = function () {
+                this.style.display = 'none';
+            };
+
+        });
+    </script>
+</body>
+
+</html>
